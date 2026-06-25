@@ -1,43 +1,133 @@
 import QtQuick
 import QtQuick.Window
+import QtQuick.Layouts
 
 
 Window {
     height: 720
     width: 1280
     visible: true
+    visibility: Window.Maximized
     title: "music"
     color: "#0a0908"
-    
 
+    
     Rectangle {
-        id: header
+        id: main
         anchors {
             top: parent.top
             left: parent.left
             right: parent.right
         }
-        height: 30
-        color: "brown"}
-    
-    Rectangle {
-        anchors {
-            top: header.bottom
-            left: parent.left
-            right: parent.right
-        }
         color: "Green"
-        height: Window.height - 30 - Window.height/10
+        height: Window.height - Window.height/10
+        
         Rectangle {
+            id: search
             anchors {
                 top: parent.top
-                left: parent.left}
-            width: parent.width/6
-            height: parent.height
-            color: "blue"
-        }
+                left: parent.left
+                right: parent.right
+            }
+            height: 60
+            color: "brown"}
         
+        Rectangle {
+            id: sidebar
+            anchors {
+                top: parent.top
+                left: parent.left
+                }
+
+            height: parent.height
+            width: 200
+            color: "blue"
+
+            Rectangle {
+                id: folder
+                anchors {
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                }
+                height: 60
+                color: "purple"
+            }
+            Rectangle {
+                id: sidebar_menu
+                anchors {
+                    top: folder.bottom
+                    left: parent.left
+                    right: parent.right
+                }
+                height: 200
+                color: "wheat"
+            }
+            Rectangle {
+                id: sidebar_artists
+                anchors {
+                    top: sidebar_menu.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                color: "magenta"
+            }
+        }    
+
+        Rectangle {
+            id: central_view
+            anchors {
+                left: sidebar.right
+                right: now_playing.left
+                top: search.bottom
+                bottom: parent.bottom
+            }
+            color: "blue"
+            }
+
+        Rectangle {
+            id: now_playing
+            anchors {
+                top: search.bottom
+                right: parent.right
+            }
+            height: parent.height
+            width: 500
+
+            Rectangle {
+                id: now_playing_album
+                anchors {
+                    top: parent.top
+                    right: parent.right
+                    left: parent.left
+                }
+                height: 50
+                color: "beige"
+            }
+            Rectangle {
+                id: now_playing_cover
+                anchors {
+                    top: now_playing_album.bottom
+                    left: parent.left
+                    right: parent.right
+                }
+                height: 500
+                color: "black"
+            }
+            Rectangle {
+                id: now_playing_track
+                anchors {
+                    top: now_playing_cover.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                color: "pink" 
+            }
+        }
     }
+
 
     Rectangle {
         id: footer
@@ -61,6 +151,7 @@ Window {
             width: Window.height/10
         }
         Rectangle {
+            id: footer_title
             width: 400
             height: parent.height
 
@@ -73,7 +164,6 @@ Window {
             color: "transparent"
 
             Text {
-                id: footer_title
                 anchors {
                     left: parent.left
                     top: parent.top
