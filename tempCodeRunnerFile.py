@@ -1,0 +1,6 @@
+cur.execute("drop table artists")
+cur.execute("drop table albums")
+cur.execute("drop table songs")
+cur.execute("CREATE TABLE songs(id INTEGER PRIMARY KEY, title STRING, length INT, path STRING, genre STRING, artist_id INT, album_id INT, FOREIGN KEY (artist_id) REFERENCES artists(id), FOREIGN KEY (album_id) REFERENCES albums(id))")
+cur.execute("CREATE TABLE albums(id INTEGER PRIMARY KEY, album STRING, artist_id INT)")
+cur.execute("CREATE TABLE artists(id INTEGER PRIMARY KEY, artist STRING)")
