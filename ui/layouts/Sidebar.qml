@@ -1,5 +1,5 @@
 import QtQuick
-
+import QtQuick.Controls 
 import "../.."
 
 Rectangle {
@@ -16,6 +16,8 @@ Rectangle {
 
     Rectangle {
         id: folder
+        property string currTime: "00:00:00"
+
         anchors {
             top: parent.top
             left: parent.left
@@ -24,6 +26,8 @@ Rectangle {
         height: theme.headerHeight
         color: "purple"
     }
+
+    
     Rectangle {
         id: sidebar_menu
         anchors {

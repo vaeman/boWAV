@@ -475,14 +475,6 @@ class Search(QWidget):
                                  "color: grey;"
                                  "font-family: 'Jetbrains Mono';")                
 
-        tracks_table.clicked.connect(self.on_row_clicked)
-
-        def on_row_clicked(self, index):
-            return index.row()
-
-        for i in range(len(self.selected_album_tracks)):
-            tracks_table.setCellWidget(i,f"{self.selected_album_tracks[i][0]}")
-
 
         tracks_table.setSelectionBehavior(QTableWidget.SelectRows)
         tracks_table.setEditTriggers(QTableWidget.NoEditTriggers)

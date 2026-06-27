@@ -44,6 +44,7 @@ def scan(folder):
                             song = get_metadata(track_path) # created a track object 
 
                             songs_path.add(track_path)
+                            song.album.replace('"','')
 
                             if song.artist not in artist_names: # if artist of song is not known
                                 
@@ -61,7 +62,12 @@ def scan(folder):
 
                                 cursor.execute("INSERT INTO songs (title, length, path, genre, album_id, artist_id) VALUES (?,?,?,?,?,?)", (song.title, song.length, song.path, song.genre, album_id, artist_id))
                                 # conn.commit()
-
+                                try:
+                                    get_cover(track_path, album_id)
+                                except Exception as e:
+                                    print(e)
+                                    pass
+                            
                             elif song.album not in album_names: # if artist is known but album is not 
                                 
                                 album_names.add(song.album)
@@ -131,30 +137,34 @@ class Track:
         
 def get_metadata(track_path): # gets song metadata (title, length, artist etc)
     
-    track = mutagen.File(track_path)
+    track = mutagen.File(track_path) # type: ignore
+    if track is None:
+        raise ValueError(f"Could not read audio file: {track_path}")
     track_length = int(track.info.length)
     ext = os.path.splitext(track_path)[1].lower()
 
     if ext == ".mp3" or ext == ".flac":
         track = EasyID3(track_path) if ext == ".mp3" else FLAC(track_path)
-        track_title = track.get("title", ["Unknown"])[0]
-        track_artist =track.get("artist", ["Unknown"])[0]
-        track_album = track.get("album", ["Unknown"])[0]
-        track_genre = track.get("genre", ["Unknown"])[0]
+        track_title = (track.get("title") or ["Unknown"])[0]
+        track_artist = (track.get("artist") or ["Unknown"])[0]
+        track_album = (track.get("album") or ["Unknown"])[0]
+        track_genre = (track.get("genre") or ["Unknown"])[0]
     
     elif ext == ".ogg":
         track = OggVorbis(track_path)
-        track_title = track.get("title", ["Unknown"])[0]
-        track_artist =track.get("artist", ["Unknown"])[0]
-        track_album = track.get("album", ["Unknown"])[0]
-        track_genre = track.get("genre", ["Unknown"])[0]
+        track_title = (track.get("title") or ["Unknown"])[0]
+        track_artist = (track.get("artist") or ["Unknown"])[0]
+        track_album = (track.get("album") or ["Unknown"])[0]
+        track_genre = (track.get("genre") or ["Unknown"])[0]
     
     elif ext == ".m4a" or ext == ".mp4":
         track = MP4(track_path)
-        track_title = track.get("©nam", ["Unknown"])[0]
-        track_artist = track.get("©ART", ["Unknown"])[0]
-        track_album = track.get("©alb", ["Unknown"])[0]
-        track_genre = track.get("©gen", ["Unknown"])[0]
+        track_title = (track.get("©nam") or ["Unknown"])[0]
+        track_artist = (track.get("©ART") or ["Unknown"])[0]
+        track_album = (track.get("©alb") or ["Unknown"])[0]
+        track_genre = (track.get("©gen") or ["Unknown"])[0]
+        # metadata = track.tags
+        # print(metadata.pprint())
 
     split = track_artist.split(" ")
 
@@ -178,12 +188,14 @@ def get_metadata(track_path): # gets song metadata (title, length, artist etc)
 def get_cover(track_path,album_id):
 
     ext = os.path.splitext(track_path)[1].lower() 
+    data = None
+
     if ext == ".mp3":
         tags = ID3(track_path)
         cover = tags.get("APIC:")
         if cover != None:
             data = cover.data
-            with open(f"covers/{album_id}.png", "wb") as f:
+            with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
                 f.write(data)
         else:
             print(album_id)
@@ -191,25 +203,48 @@ def get_cover(track_path,album_id):
         tags = FLAC(track_path)
         if len(tags.pictures) != 0:
             data = tags.pictures[0].data
-            with open(f"covers/{album_id}.png", "wb") as f:
+            with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
                 f.write(data)
         else:
             print(album_id)
+            
     elif ext == ".wav":
         tags = WAVE(track_path)
         art = tags.get("APIC:")
         if art != None:
             data = art.data
-            with open(f"covers/{album_id}.png", "wb") as f:
+            with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
                 f.write(data)
         else:
             print(album_id)
+    elif ext == ".m4a":
+        tags = MP4(track_path)
+        covr = tags.get("covr")
+        if covr:
+            data = bytes(covr[0])
+            with open(f"ui/assets/covers/{album_id}.png", "wb") as f: 
+                f.write(data)
+
+    
+    # check folder
+    if data is None:
+        folder = os.path.dirname(track_path)
+        for name in ("cover", "folder", "front", "album", "artwork"):
+            for img_ext in (".jpg", ".jpeg", ".png"):
+                candidate = os.path.join(folder, name + img_ext)
+                if os.path.isfile(candidate):
+                    with open(candidate, "rb") as f:
+                        data = f.read()
+                    break
+            if data:
+                break
+    if data:
+        with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
+            f.write(data)
     else:
-        print(album_id)
+        print(f"No cover found for album_id {album_id}")
     
-
     
-
 scan("D:/Music/")
 
 # query system 
@@ -220,12 +255,9 @@ def query(search_query):
     cursor.execute("SELECT songs.title, artists.artist, albums.album, songs.length FROM songs JOIN artists ON songs.artist_id = artists.id JOIN albums ON songs.album_id = albums.id WHERE LOWER(songs.title) LIKE ? OR LOWER(artists.artist) LIKE ? OR LOWER(albums.album) LIKE ?", (f"%{search_query}%",f"%{search_query}%",f"%{search_query}%"))
     result = cursor.fetchall()
 
-    # song_length = f"{}"
-
-    # print(result)
     print(f"fetched {len(result)} songs")
     print(*(result),sep='\n')
 
 
-# query("heroes")
+query("heroes")
 # print(query("nusrat"))

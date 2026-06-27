@@ -1,9 +1,10 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
+import QtQuick.Controls
 import "ui/layouts"
 
-Window {
+ApplicationWindow {
     height: 720
     width: 1280
     visible: true
@@ -48,7 +49,7 @@ Window {
                 top: search.bottom
                 right: parent.right
             }
-            width: theme.playerWidth}
+            width: theme.playerWidth} 
     }
 
 

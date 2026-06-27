@@ -6,7 +6,7 @@ QtObject {
     readonly property int spacingMedium: 16
     readonly property int spacingLarge: 24
 
-    readonly property int sidebarWidth: 220
+    readonly property int sidebarWidth: 250
     readonly property int playerWidth: 400
 
     readonly property int headerHeight: 40

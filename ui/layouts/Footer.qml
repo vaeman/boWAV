@@ -14,18 +14,17 @@ Rectangle {
     color: "#292929"
     
     Image {
-        source: "../../images/download.png"
+        source: "../assets/images/download.png"
         id: footer_cover
 
         anchors {
             left: parent.left
             top: parent.top
         }
-        height: Window.height/10
-        width: Window.height/10
+        height: theme.footerHeight 
+        width: theme.footerHeight 
     }
     Rectangle {
-        id: footer_title
         width: 400
         height: parent.height
 
@@ -38,6 +37,7 @@ Rectangle {
         color: "transparent"
 
         Text {
+            id: footer_title
             anchors {
                 left: parent.left
                 top: parent.top
