@@ -1,6 +1,6 @@
 import QtQuick
 
-import "../.."
+import "../"
 
 Rectangle {
     required property Theme theme

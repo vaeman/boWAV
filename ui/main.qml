@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
-import "ui/layouts"
+import "layouts"
 
 ApplicationWindow {
     height: 720
@@ -30,6 +30,9 @@ ApplicationWindow {
         Sidebar {
             id: sidebar
             theme:theme
+            onButtonSelected: function(labelName) {
+                central_view.stack.replace(pageComponents[labelName])
+            }
         }
         Central {
             id: central_view
@@ -41,7 +44,6 @@ ApplicationWindow {
                 bottom: parent.bottom
             }
             }
-
         NowPlaying {
             id: now_playing
             theme: theme

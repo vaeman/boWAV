@@ -8,10 +8,13 @@ from mutagen.wave import WAVE
 import sqlite3
 import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
 # scans the given folder, stores it in a database
 
 def scan(folder):
-    conn = sqlite3.connect("data.db")
+    conn = sqlite3.connect(os.path.join(BASE_DIR, "../data.db"))
     cursor = conn.cursor()
 
     SUPPORTED = {".mp3", ".flac", ".ogg", ".wav", ".m4a"}
@@ -195,7 +198,7 @@ def get_cover(track_path,album_id):
         cover = tags.get("APIC:")
         if cover != None:
             data = cover.data
-            with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
+            with open(os.path.join(BASE_DIR, f"../ui/assets/covers/{album_id}.png"), "wb") as f:
                 f.write(data)
         else:
             print(album_id)
@@ -203,7 +206,7 @@ def get_cover(track_path,album_id):
         tags = FLAC(track_path)
         if len(tags.pictures) != 0:
             data = tags.pictures[0].data
-            with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
+            with open(os.path.join(BASE_DIR, f"../ui/assets/covers/{album_id}.png"), "wb") as f:
                 f.write(data)
         else:
             print(album_id)
@@ -213,7 +216,7 @@ def get_cover(track_path,album_id):
         art = tags.get("APIC:")
         if art != None:
             data = art.data
-            with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
+            with open(os.path.join(BASE_DIR, f"../ui/assets/covers/{album_id}.png"), "wb") as f:
                 f.write(data)
         else:
             print(album_id)
@@ -222,7 +225,7 @@ def get_cover(track_path,album_id):
         covr = tags.get("covr")
         if covr:
             data = bytes(covr[0])
-            with open(f"ui/assets/covers/{album_id}.png", "wb") as f: 
+            with open(os.path.join(BASE_DIR, f"../ui/assets/covers/{album_id}.png"), "wb") as f: 
                 f.write(data)
 
     
@@ -239,25 +242,10 @@ def get_cover(track_path,album_id):
             if data:
                 break
     if data:
-        with open(f"ui/assets/covers/{album_id}.png", "wb") as f:
+        with open(os.path.join(BASE_DIR, f"../ui/assets/covers/{album_id}.png"), "wb") as f:
             f.write(data)
     else:
         print(f"No cover found for album_id {album_id}")
     
     
 scan("D:/Music/")
-
-# query system 
-
-def query(search_query):
-    conn = sqlite3.connect("data.db")
-    cursor = conn.cursor()
-    cursor.execute("SELECT songs.title, artists.artist, albums.album, songs.length FROM songs JOIN artists ON songs.artist_id = artists.id JOIN albums ON songs.album_id = albums.id WHERE LOWER(songs.title) LIKE ? OR LOWER(artists.artist) LIKE ? OR LOWER(albums.album) LIKE ?", (f"%{search_query}%",f"%{search_query}%",f"%{search_query}%"))
-    result = cursor.fetchall()
-
-    print(f"fetched {len(result)} songs")
-    print(*(result),sep='\n')
-
-
-query("heroes")
-# print(query("nusrat"))

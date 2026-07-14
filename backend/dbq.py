@@ -1,14 +1,18 @@
 import sqlite3
+import os
 
-conn = sqlite3.connect("data.db")
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+conn = sqlite3.connect(os.path.join(BASE_DIR, "../data.db"))
+
 cur = conn.cursor()
 
 cur.execute("drop table artists")
 cur.execute("drop table albums")
 cur.execute("drop table songs")
-cur.execute("CREATE TABLE songs(id INTEGER PRIMARY KEY, title STRING, length INT, path STRING, genre STRING, artist_id INT, album_id INT, FOREIGN KEY (artist_id) REFERENCES artists(id), FOREIGN KEY (album_id) REFERENCES albums(id))")
-cur.execute("CREATE TABLE albums(id INTEGER PRIMARY KEY, album STRING, artist_id INT)")
-cur.execute("CREATE TABLE artists(id INTEGER PRIMARY KEY, artist STRING)")
+cur.execute("CREATE TABLE songs(id INTEGER PRIMARY KEY, title TEXT, length INT, path TEXT, genre TEXT, artist_id INT, album_id INT, FOREIGN KEY (artist_id) REFERENCES artists(id), FOREIGN KEY (album_id) REFERENCES albums(id))")
+cur.execute("CREATE TABLE albums(id INTEGER PRIMARY KEY, album TEXT, artist_id INT)")
+cur.execute("CREATE TABLE artists(id INTEGER PRIMARY KEY, artist TEXT)")
 
 def album_len():
     cur.execute("SELECT COUNT(*) FROM albums")
