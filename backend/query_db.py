@@ -31,10 +31,10 @@ def list_albums(): # show all albums
 
 def fetch_tracks(album_id = None, artist_id = None): # show songs based on album id or artist id 
     if album_id is not None:
-        cur.execute("SELECT songs.id, songs.title FROM songs JOIN artists ON songs.artist_id = artists.id JOIN albums ON songs.album_id = albums.id WHERE songs.album_id = ?",(album_id,))
+        cur.execute("SELECT songs.id, songs.title, songs.path, songs.length FROM songs JOIN artists ON songs.artist_id = artists.id JOIN albums ON songs.album_id = albums.id WHERE songs.album_id = ?",(album_id,))
         return cur.fetchall()
     else:
-        cur.execute("SELECT songs.id, songs.path, songs.title, artists.artist, albums.album, songs.length FROM songs JOIN artists ON songs.artist_id = artists.id JOIN albums ON songs.album_id = albums.id WHERE songs.artist_id = ?",(artist_id,))
+        cur.execute("SELECT songs.id, songs.title, songs.path, songs.length FROM songs JOIN artists ON songs.artist_id = artists.id JOIN albums ON songs.album_id = albums.id WHERE songs.artist_id = ?",(artist_id,))
         return cur.fetchall()
     
 def fetch_albums(artist_id):
@@ -43,6 +43,7 @@ def fetch_albums(artist_id):
 
 def fetch_album_name(album_id):
     cur.execute("SELECT album from albums where id = (?)", (album_id, ))
+    return cur.fetchone()[0]
 
 def fetch_artist(id):
     cur.execute("SELECT artist FROM artists WHERE id = (?)", (id,))
@@ -58,5 +59,3 @@ def query(search_query):
 
     print(f"fetched {len(result)} songs")
     print(*(result),sep='\n')
-
-print(list_artists())

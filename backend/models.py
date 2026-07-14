@@ -7,14 +7,29 @@ class Backend(QObject):
     artistNameChanged = Signal()
     currentAlbumChanged = Signal()
     albumNameChanged = Signal()
+    trackLengthChanged = Signal()
 
     def __init__(self, album_model, track_model):
         super().__init__()
         self._album_model = album_model
         self._track_model = track_model
+
         self._artist_name = ""
-        self._current_album_id = ""
         self._album_name = ""
+        
+        self._current_album_id = ""
+        
+        self._track_length = ""
+
+    def getTrackLength(self):
+        return self._track_length
+    
+    def setTrackLength(self, value):
+        if self._track_length != value:
+            self._track_length = value
+            self.trackLengthChanged.emit()
+
+    trackLength = Property(str, getTrackLength, setTrackLength, notify=trackLengthChanged)
 
     def getAlbumName(self):
         return self._album_name
@@ -56,7 +71,6 @@ class Backend(QObject):
         self.setArtistName(backend.query_db.fetch_artist(artist_id))
 
     artistName = Property(str, getArtistName, setArtistName, notify=artistNameChanged)
-
 
     @Slot(int)
     def selectAlbum(self, album_id):
@@ -143,6 +157,8 @@ class AlbumModel(QAbstractListModel):
 class TrackModel(QAbstractListModel):
     IdRole = Qt.UserRole + 1 
     TitleRole = Qt.UserRole + 2
+    PathRole = Qt.UserRole + 3
+    LengthRole = Qt.UserRole + 4
 
     def __init__(self):
         super().__init__()
@@ -154,17 +170,25 @@ class TrackModel(QAbstractListModel):
     def data(self, index, role):
         if not index.isValid() or index.row() >= len(self._items):
             return None
-        track_id, title = self._items[index.row()]
+        track_id, title, path, length = self._items[index.row()]
         if role == self.IdRole:
             return track_id
         if role == self.TitleRole:
             return title
+        if role == self.PathRole:
+            return path
+        if role == self.LengthRole:
+            minutes = length // 60
+            seconds = length % 60
+            return f"{minutes}:{seconds}"
         return None
 
     def roleNames(self):
         return {
             self.IdRole: b"trackId",
             self.TitleRole: b"trackTitle",
+            self.PathRole: b"trackPath",
+            self.LengthRole: b"trackLength"
         }
 
     def set_items(self, rows):
