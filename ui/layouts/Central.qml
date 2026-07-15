@@ -49,7 +49,7 @@
                         }
                         text: backend.artistName
                         color: "white"
-                        font.family: "Helvetica"
+                        font.family: "Helvetica Neue"
                         font.pixelSize: 36
                         font.weight: Font.Bold
                     }
@@ -106,7 +106,7 @@
                             Text {
                                 text: albumName
                                 color: "white"
-                                font.family: "Helvetica"
+                                font.family: "Helvetica Neue"
                                 font.pixelSize: 13
                                 font.weight: Font.Bold
                                 elide: Text.ElideRight
@@ -116,7 +116,7 @@
                             Text {
                                 text: trackCount + " songs"
                                 color: "#888888"
-                                font.family: "Helvetica"
+                                font.family: "Helvetica Neue"
                                 font.pixelSize: 12
                                 width: parent.width
                             }
@@ -138,7 +138,6 @@
                 spacing: 0
                 // anchors.top: backbutton.bottom
 
-                // album cover + info on the left
                 Rectangle {
                     width: parent.width
                     height: 250
@@ -158,22 +157,31 @@
                             fillMode: Image.PreserveAspectCrop
                         }
                         Column {
-                        
+                            anchors.verticalCenter: parent.verticalCenter
+                            
+
                             Rectangle{
+                                id:albumTextContainer
                                 width: 600
-                                height: albumText.height + 20
+                                height: 100
                                 color: "transparent"
                                 
                                 Text {
                                     id: albumText
+                                    anchors.fill: parent
                                     text: backend.albumName
-                                    anchors.verticalCenter: parent.verticalCenter
+                                    verticalAlignment: Text.AlignVCenter
                                     color: "white"
-                                    font.family: "Helvetica"
-                                    font.pixelSize: 50
+                                    
+                                    font.family: "Helvetica Neue"
+                                    font.pixelSize: 70
                                     wrapMode: Text.WordWrap
                                     font.weight: Font.Bold
-                                    width: parent.width
+                                    elide: Text.ElideRight
+                                    
+                                    fontSizeMode: Text.Fit
+                                    minimumPixelSize: 40
+                                    maximumLineCount: 2
                                 }
                             }
                             Rectangle {
@@ -184,10 +192,12 @@
                                 Text {
                                     id: artistText
                                     text: backend.artistName
+                                    font.capitalization: Font.AllUppercase
                                     // anchors.verticalCenter: parent.verticalCenter
-                                    color: "white"
-                                    font.family: "Helvetica"
+                                    color: "#6d6d6d"
+                                    font.family: "Helvetica Neue"
                                     font.pixelSize: 25
+                                    font.weight: 300
                                     wrapMode: Text.WordWrap
                                     // font.weight: Font.Bold
                                     width: parent.width
@@ -198,16 +208,67 @@
                         
                 }
 
-                // track list on the right
+                Rectangle {
+                    width: parent.width
+                    height: 36
+                    color: "#121212"
+
+                    Text {
+                        id: headerindex
+                        text: "#"
+                        width: 35
+                        color: "#888888"
+                        font.family: "Helvetica Neue"
+                        font.pixelSize: 12
+                        font.weight: Font.Bold
+                        font.letterSpacing: 1
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.left
+                        anchors.leftMargin: 30
+                    }
+                    Text {
+                        text: "TITLE"
+                        color: "#888888"
+                        font.family: "Helvetica Neue"
+                        font.pixelSize: 12
+                        font.weight: Font.Bold
+                        font.letterSpacing: 1
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: headerindex.right
+                        anchors.leftMargin: 16
+                    }
+
+                    Text {
+                        text: "LENGTH"
+                        color: "#888888"
+                        font.family: "Helvetica Neue"
+                        font.pixelSize: 12
+                        font.weight: Font.Bold
+                        font.letterSpacing: 1
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: parent.right
+                        anchors.rightMargin: 16
+                    }
+
+                    // thin separator line under the header
+                    Rectangle {
+                        width: parent.width
+                        height: 1
+                        color: "#333333"
+                        anchors.bottom: parent.bottom
+                    }
+                }
+
+
                 ListView {
                     width: parent.width
-                    height: parent.height
+                    height: 470
                     clip: true
                     boundsBehavior: Flickable.StopAtBounds
                     model: trackModel
 
                     delegate: Rectangle {
-                        width: parent.width
+                        width: parent.width 
                         height: 48
                         color: mouseArea.containsMouse ? "#333333" : "transparent" 
 
@@ -218,22 +279,40 @@
                         }
 
                         Text {
-                            text: (index + 1) + ".    " + trackTitle
+                            id: trackindex
+                            anchors.left: parent.left
+                            text: (index+1) + ".    "
+                            anchors.leftMargin: 30
+                            width: 40
+                            font.pixelSize: 15
+                            color: "#9e9e9e"
+                            anchors.verticalCenter: parent.verticalCenter
+                            elide: Text.ElideRight
+                            font.family: "Helvetica Neue"
+                            font.weight: 400
+
+                        }
+                        
+                        Text {
+                            width: parent.width - 100
+                            text: trackTitle
                             color: "white"
                             anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
-                            anchors.leftMargin: 16
-                            font.family: "Jetbrains Mono"
-                            font.pixelSize: 13
+                            anchors.left: trackindex.right
+                            elide: Text.ElideRight
+                            anchors.leftMargin: 10
+                            font.family: "Helvetica Neue"
+                            font.weight: 400
+                            font.pixelSize: 18
                         }
                         Text {
                             text: trackLength
-                            color: "white"
+                            color: "#9e9e9e"
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.right: parent.right
-                            anchors.rightMargin: 16
-                            font.family: "Jetbrains Mono"
-                            font.pixelSize: 13
+                            anchors.rightMargin: 30
+                            font.family: "Helvetica Neue"
+                            font.pixelSize: 15
                         }
                     }
                 }

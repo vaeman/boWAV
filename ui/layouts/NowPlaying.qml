@@ -16,7 +16,15 @@ Rectangle {
             left: parent.left
         }
         height: 50
-        color: "beige"
+        color: "#171717"
+
+        Text {
+            text: backend.albumName
+            color: "white"
+            font.family: "Helvetica"
+            font.pixelSize: 20
+            font.weight: 600
+        }
     }
     Rectangle {
         id: now_playing_cover

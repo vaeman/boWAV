@@ -79,7 +79,6 @@ class Backend(QObject):
         self.setAlbumName(backend.query_db.fetch_album_name(album_id))
         self.setCurrentAlbumId(str(album_id))
 
-
 class ArtistModel(QAbstractListModel):
     IdRole = Qt.UserRole + 1
     NameRole = Qt.UserRole +2
@@ -180,6 +179,8 @@ class TrackModel(QAbstractListModel):
         if role == self.LengthRole:
             minutes = length // 60
             seconds = length % 60
+            if seconds < 10:
+                return f"{minutes}:0{seconds}"
             return f"{minutes}:{seconds}"
         return None
 

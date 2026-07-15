@@ -18,7 +18,7 @@ Rectangle {
     color: "blue"
 
     Rectangle {
-        id: folder
+        id: scan
 
         anchors {
             top: parent.top
@@ -27,13 +27,14 @@ Rectangle {
         }
         height: theme.headerHeight
         color: "purple"
+
     }
 
     
     Rectangle {
         id: sidebar_menu
         anchors {
-            top: folder.bottom
+            top:scan.bottom
             left: parent.left
             right: parent.right
         }
