@@ -96,9 +96,19 @@
                                 color: "#2a2a2a"  // fallback if no cover
 
                                 Image {
+                                    id: img2
                                     anchors.fill: parent
                                     source: "../assets/covers/" + albumId + ".png"
                                     fillMode: Image.PreserveAspectCrop
+                                    Image {
+                                        id: default_img
+                                        width: 220
+                                        height:200
+                                        anchors.fill: parent
+
+                                        source: "../assets/images/download.png"
+                                        visible: img2.status != Image.Ready
+                                    }
                                 }
                             }
 
@@ -155,7 +165,18 @@
                             // anchors.verticalCenter: parent.verticalCenter
                             source: "../assets/covers/" + backend.currentAlbumId + ".png"
                             fillMode: Image.PreserveAspectCrop
+
+                            Image {
+                                id: default_img
+                                width: 220
+                                height:200
+                                anchors.fill: parent
+
+                                source: "../assets/images/download.png"
+                                visible: trackimg.status != Image.Ready
+                            }
                         }
+
                         Column {
                             anchors.verticalCenter: parent.verticalCenter
                             
@@ -210,7 +231,7 @@
 
                 Rectangle {
                     width: parent.width
-                    height: 36
+                    height: 51
                     color: "#121212"
 
                     Text {
@@ -254,6 +275,7 @@
                     Rectangle {
                         width: parent.width
                         height: 1
+                        anchors.bottomMargin: 10
                         color: "#333333"
                         anchors.bottom: parent.bottom
                     }
@@ -276,6 +298,10 @@
                             id: mouseArea
                                 anchors.fill: parent
                                 hoverEnabled: true
+                                onDoubleClicked: player.playTrack(trackPath, backend.tracktitle,
+                                                            backend.artistName, 
+                                                            backend.albumName, 
+                                                            "../assets/covers/" + backend.currentAlbumId + ".png")
                         }
 
                         Text {

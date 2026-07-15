@@ -1,7 +1,7 @@
 from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtWidgets import QApplication
 from backend.query_db import list_artists
-from backend.models import Backend, ArtistModel, AlbumModel, TrackModel
+from backend.models import Backend, ArtistModel, AlbumModel, TrackModel, Player
 import os
 import sys
 from backend.models import Backend
@@ -16,11 +16,13 @@ def main():
     albumModel = AlbumModel()
     trackModel = TrackModel()
     backend = Backend(albumModel, trackModel)
+    player = Player()
 
     engine.rootContext().setContextProperty("backend", backend)
     engine.rootContext().setContextProperty("artistModel", artistModel)
     engine.rootContext().setContextProperty("albumModel", albumModel)
     engine.rootContext().setContextProperty("trackModel", trackModel)
+    engine.rootContext().setContextProperty("player", player)
 
 
     engine.load(os.path.join(BASE_DIR, "ui/main.qml"))

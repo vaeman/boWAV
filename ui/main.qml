@@ -33,6 +33,10 @@ ApplicationWindow {
             onButtonSelected: function(labelName) {
                 central_view.stack.replace(pageComponents[labelName])
             }
+            anchors{
+                top: search.bottom
+                left: parent.left
+            }
         }
         Central {
             id: central_view

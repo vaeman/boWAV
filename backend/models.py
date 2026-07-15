@@ -1,7 +1,12 @@
 import backend.query_db 
 from PySide6.QtCore import QObject, Signal, Slot, QUrl, QAbstractListModel, Qt, QModelIndex, Property
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+import os
+
+os.environ["QT_LOGGING_RULES"] = "qt.multimedia.*=false"
+
 
 class Backend(QObject):
     artistNameChanged = Signal()
@@ -20,6 +25,7 @@ class Backend(QObject):
         self._current_album_id = ""
         
         self._track_length = ""
+
 
     def getTrackLength(self):
         return self._track_length
@@ -57,6 +63,9 @@ class Backend(QObject):
             self._current_album_id = value
             self.currentAlbumChanged.emit()
 
+    # def playTrack(self, trackPath):
+        
+
     currentAlbumId = Property(str, getCurrentAlbumId, setCurrentAlbumId, notify=currentAlbumChanged)
 
 
@@ -78,6 +87,137 @@ class Backend(QObject):
         self._track_model.set_items(tracks)
         self.setAlbumName(backend.query_db.fetch_album_name(album_id))
         self.setCurrentAlbumId(str(album_id))
+
+
+
+class Player(QObject):
+    titleChanged = Signal()
+    artistChanged = Signal()
+    albumChanged = Signal()
+    coverPathChanged = Signal()
+    trackPathChanged = Signal()
+    isPlayingChanged = Signal()
+    positionChanged = Signal()
+    durationChanged = Signal()
+    volumeChanged = Signal()
+    
+    def __init__(self):
+        super().__init__()
+        self._media_player = QMediaPlayer()
+        self._audio_output = QAudioOutput()
+        self._media_player.setAudioOutput(self._audio_output)
+
+        self._title = ""
+        self._artist = ""
+        self._album = ""
+        self._track_path = ""
+        self._cover_path = ""
+
+        self._media_player.playingChanged.connect(self.isPlayingChanged)
+        self._media_player.positionChanged.connect(self.positionChanged)
+        self._media_player.durationChanged.connect(self.durationChanged)
+
+    def getTitle(self):
+        return self._title
+    
+    def setTitle(self, value):
+        if self._title != value:
+            self._title = value
+            self.titleChanged.emit()
+
+    title = Property(str, getTitle, setTitle, notify= titleChanged)
+
+    def getArtist(self):
+        return self._artist
+    
+    def setArtist(self, value):
+        if self._artist != value:
+            self._artist = value
+            self.artistChanged.emit()
+
+    artist = Property(str, getArtist, setArtist, notify = artistChanged)
+
+    def getAlbum(self):
+        return self._album
+    
+    def setAlbum(self, value):
+        if self._album != value:
+            self._album = value
+            self.albumChanged.emit()
+    
+    album = Property(str, getAlbum, setAlbum, notify = albumChanged)
+
+    def getTrackPath(self):
+        return self._track_path
+    
+    def setTrackPath(self, value):
+        if self._track_path != value:
+            self._track_path = value
+            self.trackPathChanged.emit()
+
+    trackPath = Property(str, getTrackPath, setTrackPath, notify = trackPathChanged)
+
+    def getCoverPath(self):
+        return self._cover_path
+
+    def setCoverPath(self, value):
+        if self._cover_path != value:
+            self._cover_path = value
+            self.coverPathChanged.emit()
+    
+    coverPath = Property(str, getCoverPath, setCoverPath, notify = coverPathChanged)
+
+    def getIsPlaying(self):
+        return self._media_player.isPlaying()
+    
+    isPlaying = Property(bool, getIsPlaying, notify= isPlayingChanged)
+
+    def getPosition(self):
+        return self._media_player.position() # ms
+    
+    position = Property(int, getPosition, notify = positionChanged)
+
+    def getDuration(self):
+        return self._media_player.duration() # ms
+    
+    duration = Property(int, getDuration, notify=durationChanged)
+
+    def getVolume(self):
+        return self._audio_output.volume() # 0-1
+    
+    def setVolume(self, value):
+        self._audio_output.setVolume(value)
+        self.volumeChanged.emit()
+
+    volume = Property(int, getVolume, notify=volumeChanged)
+
+    @Slot(str, str, str, str, str)
+    def playTrack(self, track_path, title, artist, album, cover_path):
+        
+        self._media_player.setSource(QUrl.fromLocalFile(track_path))
+        
+        self.setTitle(title)
+        self.setArtist(artist)
+        self.setAlbum(album)
+        self.setCoverPath(cover_path)
+
+        self._media_player.play()
+
+    @Slot()
+    def togglePlay(self):
+        if self._media_player.isPlaying():
+            self._media_player.pause()
+        else: self.media_player.play()     
+
+    @Slot(int)
+    def seek(self, position):
+        self._media_player.setPosition(position)       
+
+            
+
+
+        
+
 
 class ArtistModel(QAbstractListModel):
     IdRole = Qt.UserRole + 1

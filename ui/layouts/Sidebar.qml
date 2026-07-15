@@ -6,35 +6,30 @@ import "../"
 Rectangle {
     required property Theme theme
 
-    anchors {
-        top: parent.top
-        left: parent.left
-        }
-
     signal buttonSelected(string labelName)
 
     height: parent.height
     width: theme.sidebarWidth
     color: "blue"
 
-    Rectangle {
-        id: scan
+    // Rectangle {
+    //     id: scan
 
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
-        }
-        height: theme.headerHeight
-        color: "purple"
+    //     anchors {
+    //         top: parent.top
+    //         left: parent.left
+    //         right: parent.right
+    //     }
+    //     height: theme.headerHeight
+    //     color: "purple"
 
-    }
+    // }
 
     
     Rectangle {
         id: sidebar_menu
         anchors {
-            top:scan.bottom
+            top: parent.top
             left: parent.left
             right: parent.right
         }
