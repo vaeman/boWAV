@@ -65,73 +65,116 @@ Rectangle {
 
     Rectangle {
         anchors.fill: parent
-
-        Rectangle {
-            anchors.centerIn: parent
-            height: 45
-            width: 45
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            radius : 45
-
-            color: mousearea.containsMouse ? "#505050" :"#474747"
-
-            MouseArea {
-                id: mousearea
-
-
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked: player.togglePlay
-            }
-
-            border.width: 2
-            border.color: "#1d1d1d"
-
-            Text {
-                anchors.centerIn: parent
-                anchors.verticalCenterOffset: -2
-                anchors.horizontalCenterOffset: 1
-
-                text: "▶"
-                font.pixelSize: 40
-                color: "#a6a6a6"
-            }
-        }
-                Rectangle {
-            anchors.centerIn: parent
-            height: 40
-            width: 40
-            anchors.leftMargin: 10
-            anchors.rightMargin: 10
-            radius : 40
-
-            color: mousearea2.containsMouse ? "#505050" :"#474747"
-
-            MouseArea {
-                id: mousearea2
-
-
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked: player.togglePlay
-            }
-
-            border.width: 2
-            border.color: "#1d1d1d"
-
-            Text {
-                anchors.centerIn: parent
-                anchors.verticalCenterOffset: -2
-                anchors.horizontalCenterOffset: 1
-
-                text: "▶"
-                font.pixelSize: 35
-                color: "#a6a6a6"
-            }
-        }
-        
         color: "transparent"
-    }
 
+        Row {
+            anchors.centerIn: parent
+            spacing: 20
+
+            Item {
+                width: 45
+                height: 45
+
+                Rectangle {
+                    height: 35
+                    width: 35
+                    radius : 35
+
+                    anchors.centerIn: parent
+
+                    color: mousearea1.containsMouse ? "#505050" :"#474747"
+
+                    MouseArea {
+                        id: mousearea1
+
+
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: player.togglePlay()
+                    }
+
+                    border.width: 1
+                    border.color: "#1d1d1d"
+
+                    Image {
+                        // anchors.fill: parent
+                        anchors.centerIn: parent
+
+                        width: 30
+                        height: 30
+                        
+                        fillMode: Image.PreserveAspectFit
+                        source: "../assets/icons/angles-left-solid-full.svg"
+                    }
+                }
+            }
+            
+
+            Rectangle {
+                height: 45
+                width: 45
+                radius : 45
+
+                color: mousearea.containsMouse ? "#505050" :"#474747"
+
+                MouseArea {
+                    id: mousearea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: player.togglePlay()
+                }
+
+                border.width: 1
+                border.color: "#1d1d1d"
+
+                Image {
+                    // anchors.fill: parent
+                    anchors.centerIn: parent
+
+                    width: 30
+                    height: 30
+                    
+                    fillMode: Image.PreserveAspectFit
+                    source: player.playIconPath
+                }
+            }
+            Item {
+                width: 45
+                height: 45
+
+                Rectangle {
+                    height: 35
+                    width: 35
+                    radius : 35
+
+                    anchors.centerIn: parent
+
+                    color: mousearea3.containsMouse ? "#505050" :"#474747"
+
+                    MouseArea {
+                        id: mousearea3
+
+
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: player.togglePlay()
+                    }
+
+                    border.width: 1
+                    border.color: "#1d1d1d"
+
+                    Image {
+                        // anchors.fill: parent
+                        anchors.centerIn: parent
+
+                        width: 30
+                        height: 30
+                        
+                        fillMode: Image.PreserveAspectFit
+                        source: "../assets/icons/angles-right-solid-full.svg"
+                    }
+                }
+            }
+        }
+    }
 }

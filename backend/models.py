@@ -100,6 +100,7 @@ class Player(QObject):
     positionChanged = Signal()
     durationChanged = Signal()
     volumeChanged = Signal()
+    playIconPathChanged = Signal()
     
     def __init__(self):
         super().__init__()
@@ -109,8 +110,9 @@ class Player(QObject):
 
         self._title = ""
         self._artist = ""
+        self._playIconPath = "../assets/icons/play-solid-full.svg"
         self._album = ""
-        self._track_path = ""
+        self._track_path = "" 
         self._cover_path = ""
 
         self._media_player.playingChanged.connect(self.isPlayingChanged)
@@ -195,28 +197,37 @@ class Player(QObject):
     def playTrack(self, track_path, title, artist, album, cover_path):
         
         self._media_player.setSource(QUrl.fromLocalFile(track_path))
-        
+        self.setPlayIconPath("../assets/icons/pause-solid-full.svg")
         self.setTitle(title)
         self.setArtist(artist)
         self.setAlbum(album)
         self.setCoverPath(cover_path)
 
         self._media_player.play()
+    
+    def getPlayIconPath(self):
+        return self._playIconPath
+    
+    def setPlayIconPath(self, value):
+        if self._playIconPath != value:
+            self._playIconPath = value
+            self.playIconPathChanged.emit()
+            
+    playIconPath = Property(str, getPlayIconPath, setPlayIconPath, notify= playIconPathChanged)
 
     @Slot()
     def togglePlay(self):
         if self._media_player.isPlaying():
+            self.setPlayIconPath("../assets/icons/pause-solid-full.svg")
             self._media_player.pause()
-        else: self._media_player.play()     
+        else: 
+            self._media_player.play()     
+            self.setPlayIconPath("../assets/icons/pause-solid-full.svg")
+            
 
     @Slot(int)
     def seek(self, position):
         self._media_player.setPosition(position)       
-
-            
-
-
-        
 
 
 class ArtistModel(QAbstractListModel):
