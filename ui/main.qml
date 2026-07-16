@@ -48,6 +48,15 @@ ApplicationWindow {
                 bottom: parent.bottom
             }
             }
+        Rectangle {
+            anchors {
+                right: now_playing.left
+                top: search.bottom
+                bottom : parent.bottom
+            }
+            width: 1
+            color: "#282828"
+        }
         NowPlaying {
             id: now_playing
             theme: theme
@@ -60,6 +69,12 @@ ApplicationWindow {
 
 
     Footer {
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+
         id: footer
         theme: theme
 

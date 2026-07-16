@@ -213,7 +213,6 @@
                                 Text {
                                     id: artistText
                                     text: backend.artistName
-                                    font.capitalization: Font.AllUppercase
                                     // anchors.verticalCenter: parent.verticalCenter
                                     color: "#6d6d6d"
                                     font.family: "Helvetica Neue"
@@ -284,7 +283,7 @@
 
                 ListView {
                     width: parent.width
-                    height: 470
+                    height: 420
                     clip: true
                     boundsBehavior: Flickable.StopAtBounds
                     model: trackModel
@@ -298,7 +297,7 @@
                             id: mouseArea
                                 anchors.fill: parent
                                 hoverEnabled: true
-                                onDoubleClicked: player.playTrack(trackPath, backend.tracktitle,
+                                onDoubleClicked: player.playTrack(trackPath, trackTitle,
                                                             backend.artistName, 
                                                             backend.albumName, 
                                                             "../assets/covers/" + backend.currentAlbumId + ".png")

@@ -207,7 +207,7 @@ class Player(QObject):
     def togglePlay(self):
         if self._media_player.isPlaying():
             self._media_player.pause()
-        else: self.media_player.play()     
+        else: self._media_player.play()     
 
     @Slot(int)
     def seek(self, position):

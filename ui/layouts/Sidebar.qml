@@ -36,45 +36,30 @@ Rectangle {
         height: childrenRect.height
         color: "#1f1f1f"
 
-        Column {
+        Row {
             width: parent.width
-            bottomPadding: 10
             spacing: 0
-
-            Text {
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: "LIBRARY"
-                color: "#c8c8c8"
-                font.family: "Jetbrains Mono"
-                font.letterSpacing: 15
-                font.pixelSize: 20
-                font.weight: Font.Bold
-                leftPadding: 10
-                topPadding: 16
-                bottomPadding: 8
-            }
 
             Repeater {
                 model: [
-                    { label: "Albums" },
                     { label: "Artists"},
                     { label: "Playlists"}
                 ]
 
                 delegate: Rectangle {
-                    width: parent.width
-                    color: mouseArea.containsMouse ? "#2a2a2a" : "transparent"
-                    height: 36
-                    radius: 4
+                    color: mouseArea.containsMouse ? "#1d1d1d" : "#141414"
+                    width: parent.width /2
+                    height: 40
 
                     Text {
                         text: modelData.label
                         color: "white"
-                        font.family: "Jetbrains Mono"
-                        font.pixelSize: 14 
+                        font.family: "Helvetica Neue"
+                        font.weight: 600
+                        font.pixelSize: 16
                         anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        anchors.leftMargin: 10
+                        anchors.horizontalCenter: parent.horizontalCenter
+
                     }
 
                     MouseArea {
@@ -113,7 +98,7 @@ Rectangle {
                 }
             
 
-            color: mouseArea.containsMouse ? "#3a3a3a" : index % 2 === 0 ? "#1a1a1a" : "#222222"
+            color: mouseArea.containsMouse ? "#202020" : "#171717"
 
             Text {
                 text: name
@@ -124,8 +109,11 @@ Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.leftMargin: 10
+                anchors.rightMargin: 10
 
-                font.family: "Jetbrains Mono"
+                font.pixelSize: 13
+                font.weight: 600
+                font.family: "Helvetica Neue"
         }
     }
     }
