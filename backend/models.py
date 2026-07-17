@@ -23,7 +23,6 @@ class Backend(QObject):
         self._album_name = ""
         
         self._current_album_id = ""
-        
         self._track_length = ""
 
 
@@ -89,6 +88,7 @@ class Backend(QObject):
         self.setCurrentAlbumId(str(album_id))
 
 
+import json
 
 class Player(QObject):
     titleChanged = Signal()
@@ -100,24 +100,38 @@ class Player(QObject):
     positionChanged = Signal()
     durationChanged = Signal()
     volumeChanged = Signal()
+    queueChanged = Signal()
     playIconPathChanged = Signal()
     
     def __init__(self):
         super().__init__()
+
         self._media_player = QMediaPlayer()
         self._audio_output = QAudioOutput()
         self._media_player.setAudioOutput(self._audio_output)
 
-        self._title = ""
-        self._artist = ""
         self._playIconPath = "../assets/icons/play-solid-full.svg"
-        self._album = ""
-        self._track_path = "" 
-        self._cover_path = ""
 
         self._media_player.playingChanged.connect(self.isPlayingChanged)
         self._media_player.positionChanged.connect(self.positionChanged)
         self._media_player.durationChanged.connect(self.durationChanged)
+
+        with open("queue.json") as f:
+            state = json.load(f)
+            self._title = state["current_song_name"]
+            self._artist = state["current_song_artist"]
+            self._album = state["current_song_album"]
+            self._track_path = state["current_song_track_path"]
+            self._cover_path = state["current_song_cover_path"]
+            # self._queue = state["queue"]
+            # self._queue_index = state["queue_index"]
+            self._position = state["pos_ms"]
+            self._volume = state["volume"]
+
+        self._media_player.setSource(QUrl.fromLocalFile(self._track_path))
+
+
+        # with open("queue.json", "r") as f:
 
     def getTitle(self):
         return self._title
@@ -176,7 +190,7 @@ class Player(QObject):
 
     def getPosition(self):
         return self._media_player.position() # ms
-    
+
     position = Property(int, getPosition, notify = positionChanged)
 
     def getDuration(self):
@@ -193,10 +207,30 @@ class Player(QObject):
 
     volume = Property(int, getVolume, notify=volumeChanged)
 
+
+    # @Slot()
+    # def playQueue(self, )
+
     @Slot(str, str, str, str, str)
     def playTrack(self, track_path, title, artist, album, cover_path):
         
         self._media_player.setSource(QUrl.fromLocalFile(track_path))
+
+        state = {
+            "current_song_name": title,
+            "current_song_artist": artist,
+            "current_song_album": album,
+            "current_song_cover_path": cover_path,
+            "current_song_track_path": track_path,
+            "queue": [],
+            "queue_index": 0,
+            "pos_ms": self.position,
+            "volume": self.volume
+        }
+
+        with open("queue.json", "w") as f:
+            json.dump(state, f, indent=2)
+
         self.setPlayIconPath("../assets/icons/pause-solid-full.svg")
         self.setTitle(title)
         self.setArtist(artist)
@@ -218,7 +252,7 @@ class Player(QObject):
     @Slot()
     def togglePlay(self):
         if self._media_player.isPlaying():
-            self.setPlayIconPath("../assets/icons/pause-solid-full.svg")
+            self.setPlayIconPath("../assets/icons/play-solid-full.svg")
             self._media_player.pause()
         else: 
             self._media_player.play()     

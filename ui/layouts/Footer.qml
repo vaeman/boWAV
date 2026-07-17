@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import "../"
 
 Rectangle {
@@ -66,6 +67,19 @@ Rectangle {
     Rectangle {
         anchors.fill: parent
         color: "transparent"
+
+        // Slider {
+        //     anchors.bottom: parent.bottom
+        //     anchors.horizontalCenter: parent.horizontalCenter
+        //     anchors.bottomMargin: 10
+        //     value: 0.5
+            
+        //     height: 10
+
+        //     handle: Rectangle {
+        //         x: Progress
+        //     }
+        // }
 
         Row {
             anchors.centerIn: parent

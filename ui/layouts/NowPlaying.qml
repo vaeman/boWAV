@@ -64,7 +64,7 @@ Rectangle {
             left: parent.left
             right: parent.right
         }
-        height: 60
+        height: 70
         color: "#171717"
         Text {
             id: titletext
@@ -75,7 +75,7 @@ Rectangle {
                 top: parent.top
             }
             // anchors.verticalCenter: parent.verticalCenter
-            anchors.topMargin: 10
+            anchors.topMargin: 12
             anchors.leftMargin: 15
             anchors.rightMargin: 15
             text: player.title
