@@ -55,6 +55,7 @@ def scan(folder):
                                 artist_id = cursor.lastrowid
                                 
                                 artist_names.add(song.artist)
+                                
 
                                 # print(f"artist_id: {artist_id}, album_id: {album_id}")
                     
@@ -129,13 +130,14 @@ def scan(folder):
 
 class Track:
 
-    def __init__ (self, length, title, path, album, artist, genre):
+    def __init__ (self, length, title, path, album, artist, genre, year):
         self.length = length
         self.title = title
         self.path = path
         self.album = album
         self.artist = artist
         self.genre = genre
+        self.year = year
 
         
 def get_metadata(track_path): # gets song metadata (title, length, artist etc)
@@ -152,6 +154,7 @@ def get_metadata(track_path): # gets song metadata (title, length, artist etc)
         track_artist = (track.get("artist") or ["Unknown"])[0]
         track_album = (track.get("album") or ["Unknown"])[0]
         track_genre = (track.get("genre") or ["Unknown"])[0]
+        track_year = (track.get("year") or ["Unknown"])[0]
     
     elif ext == ".ogg":
         track = OggVorbis(track_path)
@@ -159,12 +162,15 @@ def get_metadata(track_path): # gets song metadata (title, length, artist etc)
         track_artist = (track.get("artist") or ["Unknown"])[0]
         track_album = (track.get("album") or ["Unknown"])[0]
         track_genre = (track.get("genre") or ["Unknown"])[0]
+        track_year = (track.get("year") or ["Unknown"])[0]
+
     
     elif ext == ".m4a" or ext == ".mp4":
         track = MP4(track_path)
         track_title = (track.get("©nam") or ["Unknown"])[0]
         track_artist = (track.get("©ART") or ["Unknown"])[0]
         track_album = (track.get("©alb") or ["Unknown"])[0]
+        track_year = (track.get("year") or ["Unknown"])[0]
         track_genre = (track.get("©gen") or ["Unknown"])[0]
         # metadata = track.tags
         # print(metadata.pprint())
@@ -185,7 +191,7 @@ def get_metadata(track_path): # gets song metadata (title, length, artist etc)
         else:
             continue
     
-    return Track(track_length, track_title, track_path, track_album, track_artist, track_genre)
+    return Track(track_length, track_title, track_path, track_album, track_artist, track_genre, track_year)
 
 
 def get_cover(track_path,album_id):

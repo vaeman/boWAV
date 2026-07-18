@@ -6,7 +6,7 @@ Rectangle {
     required property Theme theme
 
     height: theme.footerHeight
-    color: "#292929"
+    color: "#121212"
     
     Image {
         source: player.coverPath

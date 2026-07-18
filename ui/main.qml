@@ -27,6 +27,16 @@ ApplicationWindow {
         Search {id: search
                 theme: theme}
         
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: search.bottom
+            }
+            height: 1
+            color: "#282828"
+        }
+
         Sidebar {
             id: sidebar
             theme:theme
@@ -34,14 +44,25 @@ ApplicationWindow {
                 central_view.stack.replace(pageComponents[labelName])
             }
             anchors{
+                topMargin: 1
                 top: search.bottom
                 left: parent.left
             }
+        }
+        Rectangle {
+            anchors {
+                right: sidebar.right
+                top: search.bottom
+                bottom: footer.top
+            }
+            width: 1
+            color: "#282828"
         }
         Central {
             id: central_view
             theme: theme
             anchors {
+                topMargin: 1
                 left: sidebar.right
                 right: now_playing.left
                 top: search.bottom
@@ -61,23 +82,35 @@ ApplicationWindow {
             id: now_playing
             theme: theme
             anchors {
+                topMargin: 1
                 top: search.bottom
                 right: parent.right
             }
             width: theme.playerWidth} 
+
+                    Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: footer.top
+            }
+            height: 1
+            color: "#282828"
+            }
+
+            Footer {
+                id: footer
+                theme: theme
+
+                anchors {
+                    top: parent.bottom
+                    left: parent.left
+                    right: parent.right
+                }
+            }
     }
 
 
-    Footer {
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
 
-        id: footer
-        theme: theme
-
-        }
 
 }

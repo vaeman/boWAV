@@ -100,6 +100,7 @@ class Player(QObject):
     positionChanged = Signal()
     durationChanged = Signal()
     volumeChanged = Signal()
+    mediaStatusChanged = Signal()
     queueChanged = Signal()
     playIconPathChanged = Signal()
     
@@ -115,6 +116,8 @@ class Player(QObject):
         self._media_player.playingChanged.connect(self.isPlayingChanged)
         self._media_player.positionChanged.connect(self.positionChanged)
         self._media_player.durationChanged.connect(self.durationChanged)
+        self._media_player.mediaStatusChanged.connect(self.mediaStatusChanged)
+
 
         with open("queue.json") as f:
             state = json.load(f)
@@ -123,8 +126,8 @@ class Player(QObject):
             self._album = state["current_song_album"]
             self._track_path = state["current_song_track_path"]
             self._cover_path = state["current_song_cover_path"]
-            # self._queue = state["queue"]
-            # self._queue_index = state["queue_index"]
+            self._queue = state["queue"]
+            self._queue_index = state["queue_index"]
             self._position = state["pos_ms"]
             self._volume = state["volume"]
 
@@ -142,6 +145,9 @@ class Player(QObject):
             self.titleChanged.emit()
 
     title = Property(str, getTitle, setTitle, notify= titleChanged)
+
+    # def onMediaStatusChanged(self, status):
+    #     if status == QMediaPlayer.
 
     def getArtist(self):
         return self._artist
@@ -208,8 +214,32 @@ class Player(QObject):
     volume = Property(int, getVolume, notify=volumeChanged)
 
 
-    # @Slot()
-    # def playQueue(self, )
+    @Slot(str, int)
+    def playQueue(self, tracks, index): 
+        self._queue = tracks
+        self._queue_index = index
+        self.queueChanged.emit()
+        self.playCurrentQueueItem()
+    
+    def playCurrentQueueItem(self):
+        track = self._queue[self._queue_index]
+        self.playTrack(
+        track["path"],
+        track["title"],
+        track["artist"],
+        track["album"],
+        track["cover_path"],
+    )
+        
+    @Slot()
+    def nex(self):
+        self._queue_index +=1
+        self.playCurrentQueueItem()
+    
+    @Slot()
+    def prev(self):
+        self._queue_index -=1
+        self.playCurrentQueueItem()
 
     @Slot(str, str, str, str, str)
     def playTrack(self, track_path, title, artist, album, cover_path):
