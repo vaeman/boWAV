@@ -3,6 +3,7 @@ from PySide6.QtCore import QObject, Signal, Slot, QUrl, QAbstractListModel, Qt, 
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+import random
 import os
 
 os.environ["QT_LOGGING_RULES"] = "qt.multimedia.*=false"
@@ -13,6 +14,10 @@ class Backend(QObject):
     currentAlbumChanged = Signal()
     albumNameChanged = Signal()
     trackLengthChanged = Signal()
+    colorChanged = Signal()
+    numTracksChanged = Signal()
+    numAlbumsChanged = Signal()
+    numArtistsChanged = Signal()
 
     def __init__(self, album_model, track_model):
         super().__init__()
@@ -21,9 +26,45 @@ class Backend(QObject):
 
         self._artist_name = ""
         self._album_name = ""
+
+        self._color = ""
         
         self._current_album_id = ""
         self._track_length = ""
+
+        self._num_tracks = ""
+        self._num_albums= ""
+        self._num_artists = ""
+
+    def getNumTracks(self):
+        return str(backend.query_db.count_tracks())
+
+    def setNumTracks(self, value):
+        if self._num_tracks != value:
+            self._num_tracks = value
+            self.numTracksChanged.emit()
+
+    numTracks = Property(str, getNumTracks, setNumTracks, notify=numTracksChanged)
+
+    def getNumAlbums(self):
+        return str(backend.query_db.count_albums())
+
+    def setNumAlbums(self, value):
+        if self._num_albums != value:
+            self._num_albums = value
+            self.numAlbumsChanged.emit()
+
+    numAlbums = Property(str, getNumAlbums, setNumAlbums, notify=numAlbumsChanged)
+
+    def getNumArtists(self):
+        return str(backend.query_db.count_artists())
+
+    def setNumArtists(self, value):
+        if self._num_artists != value:
+            self._num_artists = value
+            self.numArtistsChanged.emit()
+
+    numArtists = Property(str, getNumArtists, setNumArtists, notify=numArtistsChanged)
 
 
     def getTrackLength(self):
@@ -62,6 +103,23 @@ class Backend(QObject):
             self._current_album_id = value
             self.currentAlbumChanged.emit()
 
+    def getColor(self):
+        levels = range(32,128,32)
+        color =  tuple(random.choice(levels) for _ in range(3))
+        return '#%02x%02x%02x' % color
+
+    def setColor(self, value):
+        if self._color != value:
+            self._color = value
+            self.colorChanged.emit()
+        
+    color = Property(str, getColor, setColor, notify=colorChanged)
+
+    def getRandomColor(self):
+        levels = range(32, 128, 32)
+        clr = tuple(random.choice(levels) for _ in range(3))
+        self.setColor('#%02x%02x%02x' % clr)
+
     # def playTrack(self, trackPath):
         
 
@@ -72,11 +130,17 @@ class Backend(QObject):
     def buttonSelected(self, type):
         print(type)
 
+    @Slot(str)
+    def onHomeButtonSelected(self):
+        pass
+
+
     @Slot(int)
     def selectArtist(self, artist_id):
         albums = backend.query_db.fetch_albums(artist_id) 
         self._album_model.set_items(albums)
         self.setArtistName(backend.query_db.fetch_artist(artist_id))
+        self.getRandomColor()
 
     artistName = Property(str, getArtistName, setArtistName, notify=artistNameChanged)
 

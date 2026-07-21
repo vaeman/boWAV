@@ -9,6 +9,6 @@ QtObject {
     readonly property int sidebarWidth: 250
     readonly property int playerWidth: 400
 
-    readonly property int headerHeight: 40
+    readonly property int headerHeight: 50
     readonly property int footerHeight: 80
 }

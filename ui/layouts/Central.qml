@@ -11,20 +11,120 @@
         Connections {
             target: backend
             function onArtistNameChanged() {
-                stack.pop(null)
+                stack.clear()
+                stack.push(home)
+                stack.push(albumView)
             }
         }
 
         StackView {
             id: stack
             anchors.fill: parent
-            initialItem: albumView
+            initialItem: home
 
-                pushEnter: Transition {}
-                pushExit: Transition {}
-                popEnter: Transition {}
-                popExit: Transition {}
+        }
 
+        Component {
+            id: home
+            
+            Rectangle {
+                id: home
+                color: "transparent"
+                Rectangle {
+                    
+                    id: homeTitle
+                    height: 50
+                    width: parent.width
+                    
+                    Text {
+                        anchors {
+                            top: parent.top
+                            left: parent.left
+                            leftMargin: 20
+                            topMargin: 20
+                        }
+                        text: "Home"
+                        font.family: "Helvetica Neue"
+                        font.weight: 600
+                        font.pixelSize: 30
+                        color: "white"
+                    }
+                    color: "transparent"
+                }
+                Rectangle {
+                    id: stats
+                    anchors {
+                        top: homeTitle.bottom
+                        left: parent.left
+                        right: parent.right
+                    }
+                    color: "transparent"
+                    height: 25
+
+                    Row {
+                        anchors {
+                            fill: parent
+                            leftMargin: 20
+                            topMargin: 20
+                            }
+
+                        spacing: parent.width/3
+
+                        Rectangle {
+                            height: 20
+                            width: 100
+                            color: "transparent"
+                            Text {
+                                anchors {
+                                    fill: parent
+                                    centerIn: parent
+                                }
+                                text: backend.numTracks
+                                color: "white"
+                                font.pixelSize: 12
+                                font.family: "Helvetica Neue"
+                                font.weight: 600
+                            }
+                        }                            
+                        Rectangle {
+                            height: 20
+                            // width: parent.width/3
+                            width: 100
+                            color: "transparent"
+
+                            Text {
+                                anchors {
+                                    fill: parent
+                                    centerIn: parent
+                                }
+                                text: backend.numTracks
+                                color: "white"
+                                font.pixelSize: 12
+                                font.family: "Helvetica Neue"
+                                font.weight: 600
+                            }
+                        }                            
+                        Rectangle {
+                            height: 20
+                            // width: parent.width/3
+                            width: 100
+                            color: "transparent"
+                            Text {
+                                anchors {
+                                    fill: parent
+                                    centerIn: parent
+                                }
+                                text: backend.numTracks
+                                color: "white"
+                                font.pixelSize: 12
+                                font.family: "Helvetica Neue"
+                                font.weight: 600
+                            }
+                        }
+                    }
+                    
+                }
+            }
         }
 
         Component {
@@ -38,21 +138,28 @@
                 // Artist name header
                 Rectangle {
                     width: parent.width
-                    height: 100
+                    height: 250
                     color: "#121212"
 
                     Text {
                         anchors {
                             left: parent.left
+                            bottom: parent.bottom
+                            bottomMargin: 24
                             leftMargin: 24
-                            verticalCenter: parent.verticalCenter
+                            
+                            // verticalCenter: parent.verticalCenter
                         }
                         text: backend.artistName
                         color: "white"
                         font.family: "Helvetica Neue"
-                        font.pixelSize: 36
-                        font.weight: Font.Bold
+                        font.pixelSize: 42
+                        font.weight: 600
                     }
+                    // gradient: Gradient {
+                    //     GradientStop {position: 0.0; color: "transparent"}                        
+                    //     GradientStop {position: 1; color: backend.color}                        
+                    // }
                 }
 
                 // Album grid

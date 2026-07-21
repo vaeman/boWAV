@@ -35,12 +35,49 @@ Rectangle {
         }
 
     Rectangle {
+        id: home
+
+        width: 35
+
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: search.left
+            rightMargin: 40
+        }
+        color: "transparent"
+        Rectangle {
+            anchors.verticalCenter: parent.verticalCenter
+            width: 35
+            height: 35
+            radius: 10
+            color: "#282828"
+
+            Image {
+                height: 30
+                width: 30
+
+                anchors.centerIn: parent
+
+                source: "../assets/icons/house-regular-full.svg"
+                
+            }
+
+        }
+        
+    }
+
+    Rectangle {
         id: search
 
         color: "#282828"
         width: 600
-        height: 25
-        radius: 10
+        height: 30
+        radius: 4
+        border {
+            width: 1
+            color: "#565656"
+        }
         anchors.centerIn: parent
 
         TextField {
@@ -53,14 +90,14 @@ Rectangle {
             }
 
             leftPadding: 20
-            topPadding: 6
+            topPadding: 8
 
             // border: 0
             
-            background: Rectangle {
-                color: "transparent"
-                border.width: 0
-            }
+            // background: Rectangle {
+            //     color: "transparent"
+            //     border.width: 0
+            // }
 
             placeholderText: "Search.."
             color: "#909090"
